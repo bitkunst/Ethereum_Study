@@ -156,3 +156,30 @@ $ # !wq 저장후 종료하기
 
 $ source ~/.bash_profile
 ```
+
+<br>
+<br>
+
+# ganache
+
+로컬에서만 실행되는 이더리움 (테스트 용도)
+
+```shell
+$ npm install -g ganache-cli
+```
+
+- 채굴 기능 X
+- P2P 기능 X
+- 블록 / 체인 / Tx 기능만 존재
+
+1 tx -> 1 block
+<br>
+트랜잭션을 발생시키면 실시간으로 바로 확인할 수 있는 로컬 이더리움
+<br>
+dev 서버 같은 느낌,,
+
+```shell
+$ # 실행 명령어
+
+npx ganache-cli
+```
