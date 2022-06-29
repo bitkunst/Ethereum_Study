@@ -22,5 +22,9 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.1.0",
     "prettier": "^2.7.1"
+  },
+  "dependencies": {
+    "https-browserify": "^1.0.0",
+    "web3": "^1.7.4"
   }
 }
