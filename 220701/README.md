@@ -65,9 +65,24 @@ RPC 통신을 해서 다른 컴퓨터에서 우리의 geth 노드에 접근할 �
 $ geth --datadir node --http --http.addr "0.0.0.0" --http.port 9000 --http.corsdomain "*" --http.api "admin,miner,txpool,web3,personal,eth,net" --syncmode full --networkid 701
 ```
 
+웹 소켓 사용하기
+
 ```shell
 $ # webSocket
 $ geth --datadir node --ws --ws.addr "0.0.0.0" --ws.port 9005 --ws.origins "*" --ws.api "admin,miner,txpool,web3,personal,eth,net" --syncmode full --networkid 701
+```
+
+```js
+// webSocket 이용
+
+const Web3 = require('web3');
+const web3 = new Web3(new Web3.providers.WebsocketProvider('ws://127.0.0.1:9005'));
+
+web3.eth.subscribe('newBlockHeaders', (error, result) => {
+    if (!error) {
+        console.log(result);
+    }
+});
 ```
 
 이제 실행된 geth와 rpc 통신 가능
