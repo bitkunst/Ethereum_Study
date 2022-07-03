@@ -65,6 +65,11 @@ RPC 통신을 해서 다른 컴퓨터에서 우리의 geth 노드에 접근할 �
 $ geth --datadir node --http --http.addr "0.0.0.0" --http.port 9000 --http.corsdomain "*" --http.api "admin,miner,txpool,web3,personal,eth,net" --syncmode full --networkid 701
 ```
 
+```shell
+$ # webSocket
+$ geth --datadir node --ws --ws.addr "0.0.0.0" --ws.port 9005 --ws.origins "*" --ws.api "admin,miner,txpool,web3,personal,eth,net" --syncmode full --networkid 701
+```
+
 이제 실행된 geth와 rpc 통신 가능
 
 ```shell
