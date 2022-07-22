@@ -35,6 +35,7 @@ contract ERC20 is IERC20 {
     function transfer(address recipient, uint amount) external override returns (bool) {
         balances[msg.sender] -= amount;
         balances[recipient] += amount;
+        emit Transfer(msg.sender, recipient, amount);
         return true;
     }
 
@@ -44,9 +45,10 @@ contract ERC20 is IERC20 {
     // spender : B
     // amount : 5000
     // 함수 실행 주체 : A
+    // 토큰 관련 함수
     function approve(address spender, uint amount) external override returns (bool){
         allowance[msg.sender][spender] = amount;  // msg.sender가 spender에게 위임 권한을 주는 코드
-        emit Approval(msg.sender, spender, amount);  // 로그 기록
+        emit Approval(msg.sender, spender, amount);  // 로그 기록 / approve 성공시 발생되는 이벤트
         return true;
     }
 
@@ -59,9 +61,10 @@ contract ERC20 is IERC20 {
     // recipient : C (누구에게 보낼 것인지)
     // amount : 1000
     // 함수 실행 주체 : B
+    // 토큰 관련 함수
     function transferFrom(address sender, address recipient, uint amount) external override returns (bool) {
 
-        require(allowance[sender][msg.sender] < amount);
+        require(allowance[sender][msg.sender] >= amount);
 
         allowance[sender][msg.sender] -= amount;
         balances[sender] -= amount;
@@ -70,7 +73,7 @@ contract ERC20 is IERC20 {
         return true;
     }
 
-    // mint (초기 수령)
+    // mint (토큰 수령)
     function mint(uint amount) internal {
         balances[msg.sender] += amount;
         totalSupply += amount;
@@ -78,7 +81,7 @@ contract ERC20 is IERC20 {
     }
 
     // 총발행량 지우는 함수 (소각)
-    // address(0) == address 타입으로 null값 주겠다.
+    // address(0) == address 타입으로 null값 부여
     function burn(uint amount) external {
         balances[msg.sender] -= amount;
         totalSupply -= amount;

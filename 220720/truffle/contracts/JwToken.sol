@@ -3,17 +3,17 @@ pragma solidity ^0.8.15;
 
 import './ERC20.sol';
 
-contract IngToken is ERC20 {
+contract JwToken is ERC20 {
     
     address public owner;
-    uint256 public ethCanBuy = 200; // 1 ETH 당 200개를 주겠다.
+    uint256 public ethCanBuy = 100; // 1 ETH 당 100개를 주겠다.
 
     constructor(string memory _name, string memory _symbol, uint256 _amount) {
         owner = msg.sender;
         name = _name;
         symbol = _symbol;
 
-        mint(_amount * (10**uint256(decimals)));
+        mint(_amount * (10 ** uint256(decimals)));
     }
 
     // 익명함수
@@ -33,6 +33,9 @@ contract IngToken is ERC20 {
 
         fallback 과 receive 모두 익명함수
 
+        // 이더를 주면서 함수를 실행시켰는데 컨트랙트 내에 없는 함수일 때 => fallback() 함수로 떨어진다.
+        // try catch 문의 catch문 같은 기능
+
         fallback() : 이더를 받지만 돈을 보내는 행위
             // fallback 함수는 호출되는 함수가 없을 때 실행되는 함수.
             // fallback payable : 돈을 보낼 수 있게 된다. (payable 설정 해줬을 시)
@@ -50,6 +53,7 @@ contract IngToken is ERC20 {
 
     // CA 에게 돈을 줄 때는 payable 필요
     // receive는 payable을 반드시 써줘야 한다. 
+    // receive는 돈만 관련된 함수
     receive() external payable {
         
         require(msg.value != 0);
@@ -58,6 +62,10 @@ contract IngToken is ERC20 {
         require(balances[owner] >= amount);
         balances[owner] -= amount;
         balances[msg.sender] += amount;
+
+        if (msg.sender == owner) {
+            mint(amount);
+        }
 
         emit Transfer(owner, msg.sender, amount);
     }

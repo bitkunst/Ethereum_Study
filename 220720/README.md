@@ -46,18 +46,15 @@ tx = {
 }
 ```
 
-AppleShop
-CA : 0x660ec2062AE3523505973c1651C62Fd9c9Af2413
-
-ganache
-개인키1 : 0x59d08d0ab3b02a0b451c15581649b2a6e290273560dda3c0e6fa8b364c061095
-개인키2 : 0x6abd4343883661fca1bf8c70b987abf44acfba49edd1a6b7691faf31f4184024
-
-Token
 <br>
+<br>
+
+## Token
+
 개발자가 개발 자금을 벌기 위해서
 <br>
 ERC-20 만드는 것을 재활용 할 수 있게
+<br>
 <br>
 
 ## interface
@@ -84,5 +81,14 @@ IERC 에서 전체적인 틀을 잡아놓고
 ERC20 에서 세부 내용 작성
 <br>
 
-IngToken
-CA : 0xd4992c2445Cb054853d7E7a4A0563656544D095d
+```ts
+allowance {
+    // 주인
+    "0x0000" : {
+        // 관리자
+        "0x0001" : 10,
+        "0x0002" : 20,
+        "0x0003" : 30,
+    }
+}
+```
