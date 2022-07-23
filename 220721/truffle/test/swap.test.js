@@ -1,4 +1,4 @@
-const IngToken = artifacts.require('IngToken');
+const JwToken = artifacts.require('JwToken');
 const EthSwap = artifacts.require('EthSwap');
 
 function toEther(n) {
@@ -14,10 +14,11 @@ contract('EthSwap', ([deployer, account1, account2]) => {
     describe('EthSwap deployment', () => {
         // console.log(deployer, account1, account2);
         it('deployed', async () => {
-            token = await IngToken.deployed();
+            token = await JwToken.deployed();
             ethSwap = await EthSwap.deployed();
 
-            console.log(token.address, ethSwap.address);
+            console.log('JwToken CA : ', token.address);
+            console.log('EthSwap CA : ', ethSwap.address);
         });
 
         it('토큰 배포자의 기본 초기값 확인', async () => {
@@ -28,7 +29,7 @@ contract('EthSwap', ([deployer, account1, account2]) => {
 
         it('ethSwap - getSwapBalance()', async () => {
             const swapBal = await ethSwap.getSwapBalance();
-            console.log('스왑 밸런스 : ', swapBal.toString());
+            console.log('getSwapBalance() : ', swapBal.toString() / 10 ** 18);
         });
 
         it('ethSwap - getToken()', async () => {
@@ -59,7 +60,7 @@ contract('EthSwap', ([deployer, account1, account2]) => {
 
         it('token - balanceOf()', async () => {
             // token.transfer(보내는 사람 주소, 1000)
-            // IngToken에 있는 transfer 함수 실행해서 토큰 전송
+            // JwToken에 있는 transfer 함수 실행해서 토큰 전송
             // 1 token == 1 wei (단위 맞춰줌)
             await token.transfer(ethSwap.address, toEther('1000'));
             const balance = await token.balanceOf(ethSwap.address);
@@ -70,7 +71,9 @@ contract('EthSwap', ([deployer, account1, account2]) => {
 
         it('ethSwap - buyToken()', async () => {
             let balance = await token.balanceOf(account1); // 0
+            let ethBal = await web3.eth.getBalance(account1);
             console.log('account1 토큰 밸런스 : ', balance.toString());
+            console.log('account1 이더 밸런스 : ', ethBal.toString() / 10 ** 18);
 
             assert.equal(balance.toString(), '0');
 
@@ -83,7 +86,7 @@ contract('EthSwap', ([deployer, account1, account2]) => {
             console.log('buyToken() 실행 이후 account1 토큰 밸런스 : ', parseInt(balance.toString()) / 10 ** 18); // 100 token
 
             const ethAccount = await web3.eth.getBalance(account1);
-            console.log('account1 이더 밸런스 : ', ethAccount / 10 ** 18);
+            console.log('buyToken() 실행 이후 account1 이더 밸런스 : ', ethAccount / 10 ** 18);
 
             const ethSwapBalance = await web3.eth.getBalance(ethSwap.address);
             console.log('ethSwap CA에 들어간 이더 밸런스 : ', web3.utils.fromWei(ethSwapBalance));
@@ -92,12 +95,24 @@ contract('EthSwap', ([deployer, account1, account2]) => {
             console.log('ethSwap CA에 있는 토큰 밸런스 : ', ethSwapTokenBal.toString() / 10 ** 18);
         });
 
-        it('sellToken', async () => {
+        it('ethSwap - sellToken()', async () => {
             const account1_balance = await token.balanceOf(account1);
             // console.log(web3.utils.fromWei(account1_balance.toString(), 'ether'));
 
+            let swapEth = await web3.eth.getBalance(ethSwap.address);
+            let swapToken = await token.balanceOf(ethSwap.address);
+            let accountEth = await web3.eth.getBalance(account1);
+            let accountToken = await token.balanceOf(account1);
+
+            console.log(`
+                sellToken() 실행 전
+                swapEth : ${swapEth / 10 ** 18}
+                swapToken : ${swapToken / 10 ** 18}
+                accountEth : ${accountEth / 10 ** 18}
+                accountToken : ${accountToken / 10 ** 18}
+            `);
+
             // approve(위임받는사람, 보낼양)
-            // token 주는 행위
             /* 
                 A : 위임 해주는 사람
                 B : 위임 받는 사람
@@ -110,17 +125,6 @@ contract('EthSwap', ([deployer, account1, account2]) => {
             */
             // from : account1 == 위임해주는 사람
             // ethSwap (CA) == 위임 받는 사람
-            let swapEth = await web3.eth.getBalance(ethSwap.address);
-            let swapToken = await token.balanceOf(ethSwap.address);
-            let accountEth = await web3.eth.getBalance(account1);
-            let accountToken = await token.balanceOf(account1);
-
-            console.log(`
-                swapEth : ${swapEth / 10 ** 18}
-                swapToken : ${swapToken / 10 ** 18}
-                accountEth : ${accountEth / 10 ** 18}
-                accountToken : ${accountToken / 10 ** 18}
-            `);
 
             await token.approve(ethSwap.address, toEther('50'), {
                 from: account1,
@@ -136,6 +140,7 @@ contract('EthSwap', ([deployer, account1, account2]) => {
             accountToken = await token.balanceOf(account1);
 
             console.log(`
+                sellToken() 실행 이후
                 swapEth : ${swapEth / 10 ** 18}
                 swapToken : ${swapToken / 10 ** 18}
                 accountEth : ${accountEth / 10 ** 18}
@@ -143,7 +148,7 @@ contract('EthSwap', ([deployer, account1, account2]) => {
             `);
 
             // await token.transfer(ethSwap.address, toEther('50'), {from: account1})
-            // 마지막 객체는 인자값X : send({from: accoun1})
+            // 마지막 객체는 인자값X => .send({from: accoun1}) 과 동일
             // 만약 ethSwap CA에 이더 잔액이 부족하다면? 에러,,
             /*
                 {

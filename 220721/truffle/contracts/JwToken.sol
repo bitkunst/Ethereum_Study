@@ -8,9 +8,9 @@ import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 // ERC20 import 
 
 // ERC20 상속 받기
-contract IngToken is ERC20 {
-    string public _name = "IngToken";
-    string public _symbol = "ITK";
+contract JwToken is ERC20 {
+    string public _name = "JwToken";
+    string public _symbol = "JTK";
     uint256 public _totalSupply = 5000 * (10 ** decimals());
 
     // ERC20.sol 에서 이미 생성자 함수가 작성되어 있다.

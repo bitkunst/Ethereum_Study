@@ -3,11 +3,11 @@ pragma solidity ^0.8.15;
 
 import "../node_modules/openzeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
-// IngToken 배포 -> Tx , CA
-// IngToken 먼저 배포하고 IngToken의 CA를 사용해 EthSwap 배포
+// JwToken 배포 -> Tx , CA
+// JwToken 먼저 배포하고 JwToken의 CA를 사용해 EthSwap 배포
 // EthSwap 배포 -> Tx
-    // IngToken의 CA를 인자값으로 전달하여 함수 실행
-    // EthSwap 공간 안에서 IngToken 함수를 호출
+    // JwToken의 CA를 인자값으로 전달하여 함수 실행
+    // EthSwap 공간 안에서 JwToken 함수를 호출
     // CA.balanceOf() : call 함수
     // CA.transfer() : send 함수
 // 서로 간에 상호작용을 하기 위해서는 CA가 필요
@@ -16,7 +16,7 @@ contract EthSwap {
 
     // CA 계정을 받을 변수 지정
     ERC20 public token;  // ERC20 타입 지정 가능 이유 : import 해왔기 때문 + ERC20.sol 파일 안에 ERC20 이라는 컨트랙트가 존재하기 때문
-    // 타입 접근제한자 변수명
+    // 데이터 타입. 접근제한자. 변수명
 
     uint public rate = 100;
 
@@ -25,15 +25,15 @@ contract EthSwap {
         token = _token;
     }
 
-    // EOA -> EthSwap (Contract) -> getToken() -> IngToken CA 
+    // EOA -> EthSwap (Contract) -> getToken() -> return JwToken CA 
     function getToken() public view returns (address) {
         // token은 ERC20 타입이기 때문에 address로 형 변환
-        return address(token); // IngToken CA
+        return address(token); // JwToken CA
     }
 
-    // EOA -> EthSwap -> balanceOf()
-    // balanceOf()는 IngToken 컨트랙트에 있는 함수
-    // EthSwap이라는 컨트랙트에서 IngToken 컨트랙트에 요청을 보내 결과를 가져온 것 
+    // EOA -> EthSwap -> getSwapBalance() -> JwToken -> balanceOf()
+    // balanceOf()는 JwToken 컨트랙트에 있는 함수
+    // EthSwap이라는 컨트랙트에서 JwToken 컨트랙트에 요청을 보내 결과를 가져온 것 
     function getSwapBalance() public view returns (uint) {
         return token.balanceOf(msg.sender);
     }
@@ -61,9 +61,9 @@ contract EthSwap {
         return token._owner();
     }
 
-    // IngToken owner
-    // IngToken CA
-    // IngToken msg.sender
+    // JwToken owner
+    // JwToken CA
+    // JwToken msg.sender
 
     // EthSwap CA
     // EthSwap msg.sender
@@ -72,13 +72,13 @@ contract EthSwap {
 
 
     // ETH -> TOKEN buy
-    // 1 ETH 몇개의 토큰을 줄 것인가  // 1 ETH : 100 TOKEN
+    // 1 ETH 당 몇 개의 토큰을 줄 것인가  // 1 ETH : 100 TOKEN
     function buyToken() public payable {
         // buyToken
         // send({from: , to: CA, value: })
         uint256 tokenAmount = msg.value * rate;  // 1ETH 전송시 tokenAmount == 100
         require(token.balanceOf(address(this)) >= tokenAmount, "error [1]");
-        token.transfer(msg.sender, tokenAmount);
+        token.transfer(msg.sender, tokenAmount);  // from: EthSwap CA, to: msg.sender
     }
 
     // TOKEN -> ETH sell

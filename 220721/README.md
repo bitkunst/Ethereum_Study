@@ -30,7 +30,7 @@ $ npm install openzeppelin-solidity
 
 **디렉토리 경로**
 
-node_modules/openzepplin-solidity/contracts/token/erc20/
+node_modules/openzeppelin-solidity/contracts/token/ERC20/
 <br>
 ERC20.sol
 <br>
@@ -44,18 +44,23 @@ $ truffle migration
 CA : 0x02c10b047Aa97dC79F278c3F377cD98336c0B226
 <br>
 
-CA[1] CA[2]
-Contract A , Contract B
---->
-<---
+CA[1] : Contract A
+<br>
 
+CA[2] : Contract B
+<br>
+<br>
+Contract A <--> Contract B 상호작용
+<br>
 컨트랙트를 두 개 배포해서 서로간의 상호작용
 <br>
+<br>
+
 Smart Contract : this
 <br>
 msg.sender
 <br>
-allowance :
+allowance
 <br>
 approve
 <br>
