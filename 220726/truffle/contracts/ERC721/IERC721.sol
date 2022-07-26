@@ -50,6 +50,6 @@ interface IERC721 {
     // bool type으로 대리인을 만들수도 취소시킬 수도 있다.
 
     // setApprovalForAll()의 _approved 를 return 해주는 함수
-    function isApprovalForAll(address _owner, address _operator) external view returns (bool);
+    function isApprovedForAll(address _owner, address _operator) external view returns (bool);
     
 }
