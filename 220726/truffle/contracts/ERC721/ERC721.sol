@@ -116,7 +116,7 @@ contract ERC721 is IERC721, IERC721Metadata {
         // _from != _to
         require(_from != _to);
 
-        _afterToken(_from, _to, _tokenId);
+        _beforeTokenTransfer(_from, _to, _tokenId);
 
         _balances[_from] -= 1;
         _balances[_to] += 1;
@@ -137,7 +137,7 @@ contract ERC721 is IERC721, IERC721Metadata {
         address owner = _owners[_tokenId];
         require(owner == address(0));
 
-        _afterToken(address(0), _to, _tokenId);
+        _beforeTokenTransfer(address(0), _to, _tokenId);
 
         _balances[_to] += 1;
         _owners[_tokenId] = _to;
@@ -152,7 +152,7 @@ contract ERC721 is IERC721, IERC721Metadata {
     // virtual 함수는 자식 컨트랙트 안에서 기능 구현이 가능
     // 실행 시점은 ERC721을 기준으로 함수의 기능 구현은 ERC721Enumerable을 기준으로
     // ERC721Enumerable의 상태변수를 사용하고 싶기 때문,, 
-    function _afterToken(address _from, address _to, uint _token) internal virtual {}
+    function _beforeTokenTransfer(address _from, address _to, uint _token) internal virtual {}
 }
 
 /*

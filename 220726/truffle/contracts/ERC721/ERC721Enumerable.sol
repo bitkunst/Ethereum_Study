@@ -35,7 +35,7 @@ contract ERC721Enumerable is ERC721 {
         // _allTokens.push(_allTokens.length);
     }
 
-    function _afterToken(address _from, address _to, uint _tokenId) internal override {
+    function _beforeTokenTransfer(address _from, address _to, uint _tokenId) internal override {
 
         // _mint() 함수에서 실행됐을 경우
         if (_from == address(0)) {
